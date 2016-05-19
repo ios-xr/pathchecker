@@ -5,6 +5,7 @@ Used with equal cost multipath (ECMP) setup, it helps cause failover between pat
 
 The usage of the application should be obvious based on the options it needs:
 
+```
 root@pod5:/home/ubuntu# ./ncc-ospf-cost.py -h
 usage: ncc-ospf-cost.py [-h] --host HOST [-u USERNAME] [-p PASSWORD]
                         [--port PORT] [-c COST] [-o OSPF_PROCESS_NAME]
@@ -42,7 +43,7 @@ optional arguments:
   -f, --force-verdict   Force ospf cost change in case of iperf failure
   -v, --verbose         Do I really need to explain?
 root@pod5:/home/ubuntu# 
-
+```
 
 
 A representative test scenario is shown below:
