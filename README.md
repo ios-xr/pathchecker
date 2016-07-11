@@ -48,5 +48,5 @@ root@pod5:/home/ubuntu#
 
 A representative test scenario is shown below:
 
-![topology](https://xrdocs.github.io/xrdocs-images/assets/tutorial-images/ospf_nc_iperf.jpg)
+![topology](https://xrdocs.github.io/xrdocs-images/assets/images/ospf-iperf-ncclient.png)
  
