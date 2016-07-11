@@ -63,7 +63,7 @@ def run():
 
 def write_state_to_file():
     global COST_THRES_EXCEEDED
-    with open('/home/cisco/cost_exceeded_state', 'w') as state_file:
+    with open('/home/ubuntu/cost_exceeded_state', 'w') as state_file:
         state_file.write(str(COST_THRES_EXCEEDED))
 
 
@@ -77,7 +77,7 @@ def monitor_link_state():
     global COST_THRESHOLD
 
     try:
-        with open('/home/cisco/cost_exceeded_state', 'r') as state_file:
+        with open('/home/ubuntu/cost_exceeded_state', 'r') as state_file:
             COST_THRES_EXCEEDED = int(state_file.readline())
     except Exception as e:
         print "Error while opening state file, let's assume low cost state"
@@ -217,9 +217,9 @@ if __name__ == '__main__':
     # Input parameters
     parser.add_argument('--host', type=str, required=True,
                         help="The device IP or DN")
-    parser.add_argument('-u', '--username', type=str, default='cisco',
+    parser.add_argument('-u', '--username', type=str, default='vagrant',
                         help="Go on, guess!")
-    parser.add_argument('-p', '--password', type=str, default='cisco',
+    parser.add_argument('-p', '--password', type=str, default='vagrant',
                         help="Yep, this one too! ;-)")
     parser.add_argument('--port', type=int, default=830,
                         help="Specify this if you want a non-default port")
