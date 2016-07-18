@@ -1,7 +1,7 @@
 #!/bin/bash
 
-
-apt-get -y install bridge-utils
+apt-get update
+apt-get -y install bridge-utils lxc
 ifconfig eth1 promisc
 ifconfig eth2 promisc
 ifconfig eth3 promisc
