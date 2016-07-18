@@ -22,9 +22,9 @@ Vagrant.configure(2) do |config|
 
       #Source a config file and apply it to XR
 
-      node.vm.provision "file", source: "configs/rtr1_config", destination: "/home/vagrant/rtr_config"
+      node.vm.provision "transfer_config", type: "file", source: "configs/rtr1_config", destination: "/home/vagrant/rtr_config"
 
-      node.vm.provision "shell" do |s|
+      node.vm.provision "apply_config", type: "shell" do |s|
           s.path =  "scripts/apply_config.sh"
           s.args = ["/home/vagrant/rtr_config"]
       end
@@ -36,12 +36,12 @@ Vagrant.configure(2) do |config|
       end
 
       # Transfer container XML spec file and container rootfs to the correct locations
-      node.vm.provision "file", source: "nc_iperf.xml", destination: "/home/vagrant/nc_iperf.xml"
-      node.vm.provision "file", source: "nc_iperf_rootfs.tar.gz", destination: "/misc/app_host/scratch/nc_iperf_rootfs.tar.gz"
+      node.vm.provision "transfer_xml", type: "file", source: "pathchecker.xml", destination: "/home/vagrant/pathchecker.xml"
+      node.vm.provision "transfer_rootfs", type: "file", source: "pathchecker_rootfs.tar.gz", destination: "/misc/app_host/scratch/pathchecker_rootfs.tar.gz"
 
       # Launch the container using the XML file and the rootfs
-      node.vm.provision "shell" do |s|
-          s.path =  "scripts/launch_container.sh"
+      node.vm.provision "launch_lxc", type: "shell" do |s|
+          s.path =  "scripts/launch_lxc_rtr1.sh"
       end
       
     end
@@ -67,14 +67,14 @@ Vagrant.configure(2) do |config|
       end
 
       # Set up the bridge interfaces
-      node.vm.provision "shell" do |s|
+      node.vm.provision "setup_devbox", type: "shell" do |s|
           s.path =  "scripts/bridge_setup.sh"
       end
 
       # Transfer all the impairment helper scripts to cause network degradation, later
-      node.vm.provision "file", source: "scripts/impair_reference.sh", destination: "/home/vagrant/impair_reference.sh"
-      node.vm.provision "file", source: "scripts/impair_backup.sh", destination: "/home/vagrant/impair_backup.sh"
-      node.vm.provision "file", source: "scripts/stop_impair.sh", destination: "/home/vagrant/stop_impair.sh"
+      node.vm.provision "transfer_ref_impair", type: "file", source: "scripts/impair_reference.sh", destination: "/home/vagrant/impair_reference.sh"
+      node.vm.provision "transfer_bkp_impair", type: "file", source: "scripts/impair_backup.sh", destination: "/home/vagrant/impair_backup.sh"
+      node.vm.provision "transfer_stop_impair", type: "file", source: "scripts/stop_impair.sh", destination: "/home/vagrant/stop_impair.sh"
 
     end
 
@@ -90,12 +90,18 @@ Vagrant.configure(2) do |config|
 
       #Source a config file and apply it to XR
 
-      node.vm.provision "file", source: "configs/rtr2_config", destination: "/home/vagrant/rtr_config"
+      node.vm.provision "transfer_config", type: "file", source: "configs/rtr2_config", destination: "/home/vagrant/rtr_config"
 
-      node.vm.provision "shell" do |s|
+      node.vm.provision "apply_config", type: "shell" do |s|
           s.path =  "scripts/apply_config.sh"
           s.args = ["/home/vagrant/rtr_config"]
       end
+
+      # Install iperf from devhub repo 
+      node.vm.provision "install_iperf", type: "shell"  do |s|
+          s.path =  "scripts/install_iperf_rtr2.sh"
+      end
+
 
       # Set the virtualbox interfaces to promiscuous mode for the bridge node connected.
       node.vm.provider :virtualbox do |vb|
