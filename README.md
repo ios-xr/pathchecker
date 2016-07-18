@@ -1,4 +1,4 @@
-# ospf-iperf-ncclient
+# pathchecker
 
 Quick netconf client script that changes ospf cost on an interface based on the result of an iperf session on a link through the same interface.
 Used with equal cost multipath (ECMP) setup, it helps cause failover between paths based on iperf results.
@@ -6,8 +6,8 @@ Used with equal cost multipath (ECMP) setup, it helps cause failover between pat
 The usage of the application should be obvious based on the options it needs:
 
 ```
-root@pod5:/home/ubuntu# ./ncc-ospf-cost.py -h
-usage: ncc-ospf-cost.py [-h] --host HOST [-u USERNAME] [-p PASSWORD]
+root@pod5:/home/ubuntu# ./pathchecker.py -h
+usage: pathchecker.py [-h] --host HOST [-u USERNAME] [-p PASSWORD]
                         [--port PORT] [-c COST] [-o OSPF_PROCESS_NAME]
                         [-a AREA_ID] [-i INTERFACE] [-s IPERF_SERVER]
                         [-b BW_THRESHOLD] [-j JITTER_THRESHOLD]
