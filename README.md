@@ -1,7 +1,17 @@
 # pathchecker
 
-Quick netconf client script that changes ospf cost on an interface based on the result of an iperf session on a link through the same interface.
-Used with equal cost multipath (ECMP) setup, it helps cause failover between paths based on iperf results.
+Everything you need to know about running this application on a Vagrant setup with IOS-XR is documented in a hands-on fashion here:  
+
+<https://xrdocs.github.io/application-hosting/tutorials/2016-07-09-pathchecker-iperf-netconf-for-ospf-path-failover/>
+
+
+This is essentially a quick & dirty netconf client script that changes ospf cost on an interface based on the result of an iperf session on a link through the same interface.
+Used with 2 Back-to-back paths between routers, it helps cause failover between paths based on iperf results. This is of course quite usecase specific, but is representative of how more complex failover applications may be designed and hosted on IOS-XR.
+
+
+A representative test scenario is shown below:
+
+![topology](https://xrdocs.github.io/xrdocs-images/assets/images/ospf-iperf-ncclient.png)
 
 The usage of the application should be obvious based on the options it needs:
 
@@ -46,7 +56,4 @@ root@pod5:/home/ubuntu#
 ```
 
 
-A representative test scenario is shown below:
-
-![topology](https://xrdocs.github.io/xrdocs-images/assets/images/ospf-iperf-ncclient.png)
  
