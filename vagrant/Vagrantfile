@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
   
 
    config.vm.define "rtr1" do |node|
-      node.vm.box =  "XRv64-test"
+      node.vm.box =  "IOS-XRv"
 
       node.vm.network "forwarded_port", guest: 58822, host: 58822 
 
@@ -80,7 +80,7 @@ Vagrant.configure(2) do |config|
 
 
    config.vm.define "rtr2" do |node|
-      node.vm.box =  "XRv64-test"
+      node.vm.box =  "IOS-XRv"
 
       # gig0/0/0/0 connected to "link3"  and  gig0/0/0/1 connected to "link4"
       # auto_config is not supported for XR, set to false
