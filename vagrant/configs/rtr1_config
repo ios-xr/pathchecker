@@ -10,6 +10,11 @@ call-home
   destination transport-method http
  !
 !
+tpa
+ address-family ipv4
+  update-source loopback0 
+ !
+!
 interface Loopback0
  ipv4 address 1.1.1.1 255.255.255.255
 !
