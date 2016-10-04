@@ -88,6 +88,12 @@ Vagrant.configure(2) do |config|
       node.vm.network :private_network, virtualbox__intnet: "link3", auto_config: false
       node.vm.network :private_network, virtualbox__intnet: "link4", auto_config: false
 
+
+      # Install iperf from devhub repo
+      node.vm.provision "install_iperf", type: "shell"  do |s|
+          s.path =  "scripts/install_iperf_rtr2.sh"
+      end
+
       #Source a config file and apply it to XR
 
       node.vm.provision "transfer_config", type: "file", source: "configs/rtr2_config", destination: "/home/vagrant/rtr_config"
@@ -95,11 +101,6 @@ Vagrant.configure(2) do |config|
       node.vm.provision "apply_config", type: "shell" do |s|
           s.path =  "scripts/apply_config.sh"
           s.args = ["/home/vagrant/rtr_config"]
-      end
-
-      # Install iperf from devhub repo 
-      node.vm.provision "install_iperf", type: "shell"  do |s|
-          s.path =  "scripts/install_iperf_rtr2.sh"
       end
 
 
