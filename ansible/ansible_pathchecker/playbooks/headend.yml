@@ -40,6 +40,12 @@
        - dev/kmem
        - dev/ram16
        - dev/port
+       - dev/tty9
+       - dev/tty7
+       - dev/tty5
+       - dev/tty6
+       - dev/tty8
+       - dev/tty0
 
   tasks:
   - name: Copy Config file to XR

@@ -28,13 +28,13 @@
 
     - debug: var=pathchecker_status.stdout
 
-    - name: Start pathchecker daemon
-      shell: /home/ubuntu/start_pathchecker.sh
-      when: pathchecker_status.stdout == ""
+#    - name: Start pathchecker daemon
+#      shell: /home/ubuntu/start_pathchecker.sh
+#      when: pathchecker_status.stdout == ""
 
-    - name: Check pathchecker server is running
-      shell: ps -ef | grep pathchecker | grep -v grep || true
-      register: ps_output
+#    - name: Check pathchecker server is running
+#      shell: ps -ef | grep pathchecker | grep -v grep || true
+#      register: ps_output
 
-    - debug: var=ps_output.stdout_lines
+#    - debug: var=ps_output.stdout_lines
 

@@ -6,7 +6,7 @@ SET_PROXY=`export http_proxy="$http_proxy" && https_proxy="$http_proxy"`
 $SET_PROXY && sudo -E apt-get update
 $SET_PROXY && sudo -E apt-get install -y python-setuptools python-dev build-essential git libssl-dev libffi-dev sshpass lxc
 $SET_PROXY && sudo -E apt-get install -y python-pip
-$SET_PROXY && sudo -E pip install netmiko 
+$SET_PROXY && sudo -E pip install netmiko pycparser==2.13 idna 
 
 git config --global http.proxy $http_proxy
 git config --global https.proxy $https_proxy
