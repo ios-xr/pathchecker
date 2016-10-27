@@ -1,7 +1,7 @@
 [head-end]
 rtr1 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2222
 rtr3 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2203
-rtr5 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2203
+rtr5 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2210
 
 
 [head-end:vars]
@@ -15,4 +15,4 @@ ubuntu_rtr5 ospf_process="apphost" reference_interface="GigabitEthernet0/0/0/0" 
 [tail-end]
 rtr2 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2201
 rtr4 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2207
-rtr6 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2207
+rtr6 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2211
