@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
    config.vm.define "rtr1" do |rtr1|
       rtr1.vm.box =  "IOS-XRv"
 
-      rtr1.vm.network "forwarded_port", guest: 58822, host: 58822 
+      rtr1.vm.network "forwarded_port", guest: 58822, host: 58822, auto_correct: true 
 
       # gig0/0/0/0 connected to "link1", gig0/0/0/1 connected to "link2"
       # auto_config is not supported for XR, set to false
@@ -102,7 +102,7 @@ Vagrant.configure(2) do |config|
    config.vm.define "rtr3" do |rtr3|
       rtr3.vm.box =  "IOS-XRv"
 
-      rtr3.vm.network "forwarded_port", guest: 58822, host: 58833
+      rtr3.vm.network "forwarded_port", guest: 58822, host: 58833, auto_correct: true
 
       # gig0/0/0/0 connected to "link1", gig0/0/0/1 connected to "link2"
       # auto_config is not supported for XR, set to false
@@ -193,7 +193,7 @@ Vagrant.configure(2) do |config|
    config.vm.define "rtr5" do |rtr5|
       rtr5.vm.box =  "IOS-XRv"
 
-      rtr5.vm.network "forwarded_port", guest: 58822, host: 58833
+      rtr5.vm.network "forwarded_port", guest: 58822, host: 58844, auto_correct: true
 
       # gig0/0/0/0 connected to "link1", gig0/0/0/1 connected to "link2"
       # auto_config is not supported for XR, set to false
