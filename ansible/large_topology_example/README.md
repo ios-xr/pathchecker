@@ -112,36 +112,25 @@ vagrant@vagrant-ubuntu-trusty-64:~
 vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ cat ansible_hosts 
 [head-end]
 rtr1 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2222
+rtr3 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2203
+rtr5 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2203
+
 
 [head-end:vars]
 pathchecker_port="58822"
 
-[tail-end]
-rtr2 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2201
-
 [pathchecker_containers]
 ubuntu_rtr1 ospf_process="apphost" reference_interface="GigabitEthernet0/0/0/0" iperf_server="2.2.2.2" jitter_threshold="4" pktloss_threshold="6" iperf_monitoring_interval="10" ansible_become_pass="ubuntu" ansible_ssh_user="ubuntu" ansible_ssh_pass="ubuntu" ansible_ssh_host=10.0.2.2 ansible_ssh_port=58822
+ubuntu_rtr3 ospf_process="apphost" reference_interface="GigabitEthernet0/0/0/0" iperf_server="4.4.4.4" jitter_threshold="4" pktloss_threshold="6" iperf_monitoring_interval="10" ansible_become_pass="ubuntu" ansible_ssh_user="ubuntu" ansible_ssh_pass="ubuntu" ansible_ssh_host=10.0.2.2 ansible_ssh_port=58833
+ubuntu_rtr5 ospf_process="apphost" reference_interface="GigabitEthernet0/0/0/0" iperf_server="6.6.6.6" jitter_threshold="4" pktloss_threshold="6" iperf_monitoring_interval="10" ansible_become_pass="ubuntu" ansible_ssh_user="ubuntu" ansible_ssh_pass="ubuntu" ansible_ssh_host=10.0.2.2 ansible_ssh_port=58844
+
+[tail-end]
+rtr2 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2201
+rtr4 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2207
+rtr6 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2207
 
 vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ 
 
-vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ cat /vagrant/device_port_list.json 
-{
-"rtr1":{
-"22":"2223",
-"57722":"2222",
-"58822":"58822"
-},
-"bridge":{
-"22":"2200"
-},
-"rtr2":{
-"22":"2202",
-"57722":"2201"
-},
-"devbox":{
-"22":"2203"
-}
-}
 ```
 * Now you're ready to launch the ansible-playbook. Run eline.yml to set everything up for you.  
 
