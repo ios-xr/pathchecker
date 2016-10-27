@@ -55,5 +55,23 @@ optional arguments:
 root@pod5:/home/ubuntu# 
 ```
 
+## Using Ansible
+
+To solve this problem using Ansible and automate your steps in the same way as you would on actual routers, check out the `ansible/` directory and the corresponind README.md
+The we use with Ansible is:  
+![topo](https://xrdocs.github.io/xrdocs-images/assets/images/ansible_pathchecker.png)  
+
+The relevant README.md:
+<https://github.com/ios-xr/pathchecker/blob/master/ansible/README.md>
+
+
+
+
+## For Larger Topologies
+We reuse the Ansible playbook defined above to extend to larger topologies very easily. For this purpose a 6 router topology setup is used under the `ansible/large_topology_example/` folder, as shown below: 
+![topo](https://xrdocs.github.io/xrdocs-images/assets/images/pathchecker_large_topo.png)
+
+The relevant README.md is here: 
+<https://github.com/ios-xr/pathchecker/blob/master/ansible/large_topology_example/README.md>
 
  
