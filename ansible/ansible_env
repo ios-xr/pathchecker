@@ -1,6 +1,0 @@
-export BASEDIR=/home/vagrant
-export IOSXRDIR=$BASEDIR/iosxr-ansible
-export ANSIBLE_HOME=$BASEDIR/ansible/ansible
-export ANSIBLE_INVENTORY=$IOSXRDIR/remote/ansible_hosts
-export ANSIBLE_LIBRARY=$IOSXRDIR/remote/library
-export ANSIBLE_CONFIG=$IOSXRDIR/remote/ansible_cfg
