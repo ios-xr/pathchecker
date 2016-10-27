@@ -2,10 +2,10 @@ cd into this directory: `pathchecker/ansible` to spin up a 4 router topology as 
 
 ![topo](https://xrdocs.github.io/xrdocs-images/assets/images/ansible_pathchecker.png)
 
-*  The Container tar ball used by the Vagrantfile will need to be created by a user as described here:
-   <https://xrdocs.github.io/application-hosting/tutorials/2016-07-09-pathchecker-iperf-netconf-for-ospf-path-failover/#create-the-pathchecker-lxc-tar-ball>
+The Container tar ball used by the Vagrantfile will need to be created by a user as described here:
+<https://xrdocs.github.io/application-hosting/tutorials/2016-07-09-pathchecker-iperf-netconf-for-ospf-path-failover/#create-the-pathchecker-lxc-tar-ball>. Name it `pathchecker_rootfs.tar.gz` and place it in this directory before doing a vagrant up.
 
-*  Name it pathchecker_rootfs.tar.gz and place it in this directory before doing a vagrant up. The steps starting with clone the git repo are described below:  
+The steps starting with cloning the git repo are described below:  
 
 
 * Clone the git repo
