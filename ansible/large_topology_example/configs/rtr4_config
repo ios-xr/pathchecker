@@ -1,0 +1,50 @@
+!! XR configuration
+!
+hostname rtr4
+!
+call-home
+ service active
+ contact smart-licensing
+ profile CiscoTAC-1
+  active
+  destination transport-method http
+ !
+!
+interface Loopback0
+ ipv4 address 4.4.4.4 255.255.255.255
+!
+tpa
+ address-family ipv4
+  update-source MgmtEth0/RP0/CPU0/0  
+ !
+!
+interface Loopback1
+ ipv4 address  17.17.17.17 255.255.255.255
+!
+interface GigabitEthernet0/0/0/0
+ ipv4 address 12.1.1.20 255.255.255.0
+ no shutdown
+!
+interface GigabitEthernet0/0/0/1
+ ipv4 address 13.1.1.20 255.255.255.0
+ no shutdown
+!
+!
+router ospf apphost
+ area 0
+  interface Loopback0
+  !
+  interface GigabitEthernet0/0/0/0
+  !
+  interface GigabitEthernet0/0/0/1
+  !
+ !
+!
+ssh server v2
+ssh server netconf vrf default
+netconf-yang agent
+ ssh
+!
+!
+!
+end

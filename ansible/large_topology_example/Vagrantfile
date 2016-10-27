@@ -1,0 +1,316 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+
+Vagrant.configure(2) do |config|
+  
+
+   config.vm.define "rtr1" do |rtr1|
+      rtr1.vm.box =  "IOS-XRv"
+
+      rtr1.vm.network "forwarded_port", guest: 58822, host: 58822 
+
+      # gig0/0/0/0 connected to "link1", gig0/0/0/1 connected to "link2"
+      # auto_config is not supported for XR, set to false
+
+      rtr1.vm.network :private_network, virtualbox__intnet: "link1", auto_config: false
+      rtr1.vm.network :private_network, virtualbox__intnet: "link2", auto_config: false
+
+
+      #Source a config file and apply it to XR
+
+      rtr1.vm.provision "transfer_config", type: "file", source: "configs/rtr1_config", destination: "/home/vagrant/rtr_config"
+      
+
+      rtr1.vm.provision "apply_config", type: "shell" do |s|
+          s.path =  "scripts/apply_config.sh"
+          s.args = ["/home/vagrant/rtr_config"]
+      end
+
+      # Make sure virtualbox nics are set to promiscuous mode for a bridge node
+      rtr1.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      end
+      
+    end
+
+   config.vm.define "bridge1" do |bridge1|
+      bridge1.vm.box =  "ubuntu/trusty64"
+
+      # eth1 and eth2 connected to rtr1  and  eth3 and eth4  connected to rtr2
+      # auto_config is not supported for XR, set to false
+
+      bridge1.vm.network :private_network, virtualbox__intnet: "link1", auto_config: false
+      bridge1.vm.network :private_network, virtualbox__intnet: "link2", auto_config: false
+
+      bridge1.vm.network :private_network, virtualbox__intnet: "link3", auto_config: false
+      bridge1.vm.network :private_network, virtualbox__intnet: "link4", auto_config: false
+
+      # Important! For this node to act as a bridge, All the virtualbox interfaces must be in promiscuous mode.
+      bridge1.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc4", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc5", "allow-all"]
+      end
+
+      # Set up the bridge interfaces
+      bridge1.vm.provision "setup_bridge", type: "shell" do |s|
+          s.path =  "scripts/bridge_setup.sh"
+      end
+
+      # Transfer all the impairment helper scripts to cause network degradation, later
+      bridge1.vm.provision "transfer_ref_impair", type: "file", source: "scripts/impair_reference.sh", destination: "/home/vagrant/impair_reference.sh"
+      bridge1.vm.provision "transfer_bkp_impair", type: "file", source: "scripts/impair_backup.sh", destination: "/home/vagrant/impair_backup.sh"
+      bridge1.vm.provision "transfer_stop_impair", type: "file", source: "scripts/stop_impair.sh", destination: "/home/vagrant/stop_impair.sh"
+
+    end
+
+
+   config.vm.define "rtr2" do |rtr2|
+      rtr2.vm.box =  "IOS-XRv"
+
+      # gig0/0/0/0 connected to "link3"  and  gig0/0/0/1 connected to "link4"
+      # auto_config is not supported for XR, set to false
+
+      rtr2.vm.network :private_network, virtualbox__intnet: "link3", auto_config: false
+      rtr2.vm.network :private_network, virtualbox__intnet: "link4", auto_config: false
+
+      #Source a config file and apply it to XR
+
+      rtr2.vm.provision "transfer_config", type: "file", source: "configs/rtr2_config", destination: "/home/vagrant/rtr_config"
+
+      rtr2.vm.provision "apply_config", type: "shell" do |s|
+          s.path =  "scripts/apply_config.sh"
+          s.args = ["/home/vagrant/rtr_config"]
+      end
+
+      rtr2.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      end
+
+    end
+
+
+
+   config.vm.define "rtr3" do |rtr3|
+      rtr3.vm.box =  "IOS-XRv"
+
+      rtr3.vm.network "forwarded_port", guest: 58822, host: 58833
+
+      # gig0/0/0/0 connected to "link1", gig0/0/0/1 connected to "link2"
+      # auto_config is not supported for XR, set to false
+
+      rtr3.vm.network :private_network, virtualbox__intnet: "link11", auto_config: false
+      rtr3.vm.network :private_network, virtualbox__intnet: "link12", auto_config: false
+
+
+      #Source a config file and apply it to XR
+
+      rtr3.vm.provision "transfer_config", type: "file", source: "configs/rtr3_config", destination: "/home/vagrant/rtr_config"
+
+
+      rtr3.vm.provision "apply_config", type: "shell" do |s|
+          s.path =  "scripts/apply_config.sh"
+          s.args = ["/home/vagrant/rtr_config"]
+      end
+
+      # Make sure virtualbox nics are set to promiscuous mode for a bridge node
+      rtr3.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      end
+
+
+    end
+
+   config.vm.define "bridge2" do |bridge2|
+      bridge2.vm.box =  "ubuntu/trusty64"
+
+      # eth1 and eth2 connected to rtr1  and  eth3 and eth4  connected to rtr2
+      # auto_config is not supported for XR, set to false
+
+      bridge2.vm.network :private_network, virtualbox__intnet: "link11", auto_config: false
+      bridge2.vm.network :private_network, virtualbox__intnet: "link12", auto_config: false
+
+      bridge2.vm.network :private_network, virtualbox__intnet: "link13", auto_config: false
+      bridge2.vm.network :private_network, virtualbox__intnet: "link14", auto_config: false
+
+      # Important! For this node to act as a bridge, All the virtualbox interfaces must be in promiscuous mode.
+      bridge2.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc4", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc5", "allow-all"]
+      end
+
+      # Set up the bridge interfaces
+      bridge2.vm.provision "setup_bridge", type: "shell" do |s|
+          s.path =  "scripts/bridge_setup.sh"
+      end
+
+      # Transfer all the impairment helper scripts to cause network degradation, later
+      bridge2.vm.provision "transfer_ref_impair", type: "file", source: "scripts/impair_reference.sh", destination: "/home/vagrant/impair_reference.sh"
+      bridge2.vm.provision "transfer_bkp_impair", type: "file", source: "scripts/impair_backup.sh", destination: "/home/vagrant/impair_backup.sh"
+      bridge2.vm.provision "transfer_stop_impair", type: "file", source: "scripts/stop_impair.sh", destination: "/home/vagrant/stop_impair.sh"
+
+    end
+
+   config.vm.define "rtr4" do |rtr4|
+      rtr4.vm.box =  "IOS-XRv"
+
+      # gig0/0/0/0 connected to "link3"  and  gig0/0/0/1 connected to "link4"
+      # auto_config is not supported for XR, set to false
+
+      rtr4.vm.network :private_network, virtualbox__intnet: "link13", auto_config: false
+      rtr4.vm.network :private_network, virtualbox__intnet: "link14", auto_config: false
+
+      #Source a config file and apply it to XR
+
+      rtr4.vm.provision "transfer_config", type: "file", source: "configs/rtr4_config", destination: "/home/vagrant/rtr_config"
+
+      rtr4.vm.provision "apply_config", type: "shell" do |s|
+          s.path =  "scripts/apply_config.sh"
+          s.args = ["/home/vagrant/rtr_config"]
+      end
+
+
+      # Set the virtualbox interfaces to promiscuous mode for the bridge node connected.
+      rtr4.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      end
+
+    end
+
+
+   config.vm.define "rtr5" do |rtr5|
+      rtr5.vm.box =  "IOS-XRv"
+
+      rtr5.vm.network "forwarded_port", guest: 58822, host: 58833
+
+      # gig0/0/0/0 connected to "link1", gig0/0/0/1 connected to "link2"
+      # auto_config is not supported for XR, set to false
+
+      rtr5.vm.network :private_network, virtualbox__intnet: "link11", auto_config: false
+      rtr5.vm.network :private_network, virtualbox__intnet: "link12", auto_config: false
+
+
+      #Source a config file and apply it to XR
+
+      rtr5.vm.provision "transfer_config", type: "file", source: "configs/rtr5_config", destination: "/home/vagrant/rtr_config"
+
+
+      rtr5.vm.provision "apply_config", type: "shell" do |s|
+          s.path =  "scripts/apply_config.sh"
+          s.args = ["/home/vagrant/rtr_config"]
+      end
+
+      # Make sure virtualbox nics are set to promiscuous mode for a bridge node
+      rtr5.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      end
+
+
+    end
+
+   config.vm.define "rtr6" do |rtr6|
+      rtr6.vm.box =  "IOS-XRv"
+
+      # gig0/0/0/0 connected to "link3"  and  gig0/0/0/1 connected to "link4"
+      # auto_config is not supported for XR, set to false
+
+      rtr6.vm.network :private_network, virtualbox__intnet: "link13", auto_config: false
+      rtr6.vm.network :private_network, virtualbox__intnet: "link14", auto_config: false
+
+      #Source a config file and apply it to XR
+
+      rtr6.vm.provision "transfer_config", type: "file", source: "configs/rtr6_config", destination: "/home/vagrant/rtr_config"
+
+      rtr6.vm.provision "apply_config", type: "shell" do |s|
+          s.path =  "scripts/apply_config.sh"
+          s.args = ["/home/vagrant/rtr_config"]
+      end
+
+
+      # Set the virtualbox interfaces to promiscuous mode for the bridge node connected.
+      rtr6.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+      end
+
+    end
+
+   config.vm.define "bridge3" do |bridge3|
+      bridge3.vm.box =  "ubuntu/trusty64"
+
+      # eth1 and eth2 connected to rtr1  and  eth3 and eth4  connected to rtr2
+      # auto_config is not supported for XR, set to false
+
+      bridge3.vm.network :private_network, virtualbox__intnet: "link11", auto_config: false
+      bridge3.vm.network :private_network, virtualbox__intnet: "link12", auto_config: false
+
+      bridge3.vm.network :private_network, virtualbox__intnet: "link13", auto_config: false
+      bridge3.vm.network :private_network, virtualbox__intnet: "link14", auto_config: false
+
+      # Important! For this node to act as a bridge, All the virtualbox interfaces must be in promiscuous mode.
+      bridge3.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc3", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc4", "allow-all"]
+        vb.customize ["modifyvm", :id, "--nicpromisc5", "allow-all"]
+      end
+
+      # Set up the bridge interfaces
+      bridge3.vm.provision "setup_bridge", type: "shell" do |s|
+          s.path =  "scripts/bridge_setup.sh"
+      end
+
+      # Transfer all the impairment helper scripts to cause network degradation, later
+      bridge3.vm.provision "transfer_ref_impair", type: "file", source: "scripts/impair_reference.sh", destination: "/home/vagrant/impair_reference.sh"
+      bridge3.vm.provision "transfer_bkp_impair", type: "file", source: "scripts/impair_backup.sh", destination: "/home/vagrant/impair_backup.sh"
+      bridge3.vm.provision "transfer_stop_impair", type: "file", source: "scripts/stop_impair.sh", destination: "/home/vagrant/stop_impair.sh"
+
+    end
+
+
+
+  config.vm.define "devbox" do |devbox|
+    devbox.vm.box = "ubuntu/trusty64"
+    devbox.vm.provision "file", source: "configs/ansible_env", destination:"/home/vagrant/ansible_env"
+
+    devbox.vm.provision "setup_ansible", privileged: false, type: "shell" do |s|
+        s.path = "scripts/ansible_setup.sh"
+    end
+
+    # Transfer playbooks to the right location
+    devbox.vm.provision "transfer_playbooks", type: "file", source: "playbooks/", destination: "/home/vagrant/"
+
+    devbox.vm.provision "shell",
+      inline: "cp -r /home/vagrant/playbooks /home/vagrant/iosxr-ansible/remote/playbooks; cp /home/vagrant/iosxr-ansible/remote/playbooks/ansible_cfg /home/vagrant/iosxr-ansible/remote/; cp /home/vagrant/iosxr-ansible/remote/playbooks/ansible_hosts /home/vagrant/iosxr-ansible/remote/"
+    # Transfer script to apply public keys to XR that can be run later
+
+    devbox.vm.provision "transfer_apply_pubkey_sh", type: "file", source: "scripts/transfer_keys.py", destination: "/home/vagrant/transfer_keys.py"
+
+      # Set the virtualbox interfaces to promiscuous mode for the bridge node connected.
+    devbox.vm.provider :virtualbox do |vb|
+      vb.memory = 4096 
+    end
+
+
+    devbox.vm.provision "trigger" do |trigger|
+      trigger.fire do
+        run "scripts/get_port_list.sh"
+        run_remote "python /home/vagrant/transfer_keys.py"
+      end
+    end
+
+  end
+end

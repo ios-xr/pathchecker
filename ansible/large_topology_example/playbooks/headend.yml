@@ -1,0 +1,109 @@
+---
+- hosts: head-end 
+  become: yes
+  gather_facts: no
+  vars:
+      exclusions:
+       - dev/mpu401data
+       - dev/rmidi3
+       - dev/rmidi2
+       - dev/smpte1
+       - dev/audio1
+       - dev/smpte0
+       - dev/midi0
+       - dev/mixer1
+       - dev/smpte3
+       - dev/audio3
+       - dev/mpu401stat
+       - dev/mixer2
+       - dev/dsp1
+       - dev/midi1
+       - dev/audio2
+       - dev/rmidi0
+       - dev/midi03
+       - dev/mixer
+       - dev/midi00
+       - dev/mixer3
+       - dev/midi01
+       - dev/smpte2
+       - dev/audio
+       - dev/rmidi1
+       - dev/midi2
+       - dev/dsp
+       - dev/dsp2
+       - dev/dsp3
+       - dev/midi02
+       - dev/midi3
+       - dev/audioctl
+       - dev/sndstat
+       - dev/sequencer
+       - dev/kmem
+       - dev/ram16
+       - dev/port
+       - dev/tty9
+       - dev/tty7
+       - dev/tty5
+       - dev/tty6
+       - dev/tty8
+       - dev/tty0
+
+  tasks:
+  - name: Copy Config file to XR
+    copy: src=/vagrant/configs/mgmt_tpa_ip.cfg dest=/home/vagrant/mgmt_tpa_ip.cfg owner=vagrant force=no
+
+  - name: Copy Config file to XR
+    copy: src=/vagrant/configs/lo0_tpa_ip.cfg dest=/home/vagrant/lo0_tpa_ip.cfg owner=vagrant force=no
+
+  - name: Set TPA IP to Mgmt port to enable yum operations
+    iosxr_install_config:
+      username: '{{ ansible_ssh_user }}'
+      cfgname: '/home/vagrant/mgmt_tpa_ip.cfg'
+    register: output
+
+  - name: Check if patchchecker is already running
+    shell: sudo -i virsh list | grep pathchecker || true 
+    register: container_status 
+  - debug: var=container_status.stdout
+    
+  - name: Copy XML File
+    copy: src=/vagrant/pathchecker.xml dest=/home/vagrant/pathchecker.xml owner=vagrant force=no
+
+  - name: Copy rootfs tar ball
+    copy: src=/vagrant/pathchecker_rootfs.tar.gz dest=/misc/app_host/scratch/pathchecker_rootfs.tar.gz owner=root force=no
+
+  - name: Copy remote netrc
+    copy: src=/vagrant/netrc.py dest=/usr/lib64/python2.7/netrc.py owner=root force=no
+
+  - name: Create rootfs directory
+    file: path=/misc/app_host/pathchecker/rootfs state=directory
+    become: yes
+
+  - name: Untar the rootfs
+    unarchive: src=/misc/app_host/scratch/pathchecker_rootfs.tar.gz  dest=/misc/app_host/pathchecker/rootfs remote_src=yes creates=/misc/app_host/pathchecker/rootfs/bin/ exclude={{ exclusions }}
+    register: tar_output
+    ignore_errors: yes
+    when: container_status.stdout == "" 
+
+
+  - name: virsh create
+    shell: sudo -i virsh  create /home/vagrant/pathchecker.xml
+    args:
+      warn: no
+    register: output
+    when: container_status.stdout == ""   
+  - debug: var=output.stdout_lines
+
+  - name: Set TPA IP to loopback0
+    iosxr_install_config:
+      username: '{{ ansible_ssh_user }}'
+      cfgname: '/home/vagrant/lo0_tpa_ip.cfg'
+    register: output
+
+
+  - shell: sudo -i virsh list
+    args:
+      warn: no
+    register: output
+  - debug: var=output.stdout_lines
+
+  - wait_for: port={{ pathchecker_port }} delay=10

@@ -1,0 +1,64 @@
+---
+- hosts: tail-end 
+  become: yes
+  gather_facts: no
+
+  tasks:
+  - name: Copy Config file to XR
+    copy: src=/vagrant/configs/mgmt_tpa_ip.cfg dest=/home/vagrant/mgmt_tpa_ip.cfg owner=vagrant force=no
+
+  - name: Copy Config file to XR
+    copy: src=/vagrant/configs/lo0_tpa_ip.cfg dest=/home/vagrant/lo0_tpa_ip.cfg owner=vagrant force=no
+
+  - name: Set TPA IP to Mgmt port to enable yum operations 
+    iosxr_install_config:
+      username: '{{ ansible_ssh_user }}'
+      cfgname: '/home/vagrant/mgmt_tpa_ip.cfg'
+    register: output
+
+  - name: Copy remote netrc
+    copy: src=/vagrant/netrc.py dest=/usr/lib64/python2.7/netrc.py owner=root force=no
+
+  - name: Copy over the iperf daemon start script
+    copy: src=/vagrant/start_iperf_server.sh dest=/home/vagrant/start_iperf_server.sh owner=root mode=755 force=yes
+
+  - name: Create yum.repos.d directory
+    file: path=/etc/yum.repos.d state=directory
+    become: yes
+   
+  - name: Add Some repo
+    yum_repository:
+      name: devhub
+      description: devhub_yum_repo 
+      baseurl: "https://devhub.cisco.com/artifactory/xr600/3rdparty/x86_64/" 
+      enabled: yes 
+
+  - name: Set the dns server for yum install
+    shell: echo "nameserver 10.0.2.3" >> /etc/resolv.conf
+    become: yes
+
+  - name: install the latest version of iperf from Cisco WRL7 repo
+    yum: name=iperf enablerepo=devhub state=present
+
+  - name: Check if iperf server is already running
+    shell: ps -ef | grep iperf | grep -v grep || true
+    register: iperf_status 
+
+  - debug: var=iperf_status.stdout
+
+  - name: Set TPA IP to loopback0 
+    iosxr_install_config:
+      username: '{{ ansible_ssh_user }}'
+      cfgname: '/home/vagrant/lo0_tpa_ip.cfg'
+    register: output
+
+  - name: Start iperf server daemon
+    shell:  /home/vagrant/start_iperf_server.sh
+    when: iperf_status.stdout == ""
+
+  - name: Check iperf server is running
+    shell: ps -ef | grep iperf | grep -v grep || true 
+    register: ps_output
+
+  - debug: var=ps_output.stdout_lines
+  

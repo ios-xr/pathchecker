@@ -1,0 +1,39 @@
+---
+- hosts: pathchecker_containers 
+  gather_facts: no
+
+  tasks:
+    - name: Determine Loopback1 IP address of host XR
+      shell: ip route | grep fwd_ew | awk '{print $1}' 
+      args:
+        warn: no
+      register: loopback1 
+    - debug: var=loopback1.stdout
+
+    - name: Set up the pathchecker run based on host vars 
+      replace: dest=/home/ubuntu/pathchecker/pc_run.sh regexp='^./pathchecker.py.*$' replace='/home/ubuntu/pathchecker/pathchecker.py --host "{{ loopback1.stdout }}"  -u vagrant -p vagrant --port 830 -c 10 -o "{{ ospf_process }}"  -a 0 -i "{{ reference_interface }}" -s "{{ iperf_server }}"  -j "{{ jitter_threshold }}" -l "{{ pktloss_threshold }}" -f -t "{{ iperf_monitoring_interval }}"'
+      
+    - name: Check content of updated pc_run.sh file
+      shell: cat /home/ubuntu/pathchecker/pc_run.sh
+      register: file_output
+
+    - debug: "{{ file_output.stdout }}"
+
+    - name: Copy over the pathchecker daemon start script
+      copy: src=/vagrant/start_pathchecker.sh dest=/home/ubuntu/start_pathchecker.sh owner=ubuntu group=ubuntu mode=755 force=yes
+
+    - name: Check if pathchecker app is already running
+      shell: ps -ef | grep pathchecker | grep -v grep || true
+      register: pathchecker_status
+
+    - debug: var=pathchecker_status.stdout
+
+    - name: Start pathchecker daemon
+      shell: /home/ubuntu/start_pathchecker.sh
+      when: pathchecker_status.stdout == ""
+
+    - name: Check pathchecker server is running
+      shell: ps -ef | grep pathchecker | grep -v grep || true
+      register: ps_output
+
+    - debug: var=ps_output.stdout_lines
