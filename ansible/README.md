@@ -141,9 +141,17 @@ vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ cat /vagrant/device_por
 * Now you're ready to launch the ansible-playbook. Run eline.yml to set everything up for you.  
 
 ```
-vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ ansible-playbook playbooks/
-containers.retry  containers.yml    eline.yml         headend.retry     headend.yml       tailend.retry     tailend.yml       
 vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ ansible-playbook playbooks/eline.yml 
+
+PLAY [head-end] ****************************************************************
+
+TASK [Copy Config file to XR] **************************************************
+changed: [rtr1]
+
+TASK [Copy Config file to XR] **************************************************
+changed: [rtr1]
+
+
 ```
 
 
