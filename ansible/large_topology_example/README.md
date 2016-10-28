@@ -92,16 +92,38 @@ vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ cat /vagrant/device_por
 "57722":"2222",
 "58822":"58822"
 },
-"bridge":{
-"22":"2200"
+"bridge1":{
+"22":"2205"
 },
 "rtr2":{
-"22":"2202",
-"57722":"2201"
+"22":"2203",
+"57722":"2202"
+},
+"rtr3":{
+"22":"2204",
+"57722":"2201",
+"58822":"58833"
+},
+"bridge2":{
+"22":"2207"
+},
+"rtr4":{
+"22":"2209",
+"57722":"2208"
+},
+"rtr5":{
+"22":"2211",
+"57722":"2210",
+"58822":"58844"
+},
+"rtr6":{
+"22":"2213",
+"57722":"2212"
+},
+"bridge3":{
 },
 "devbox":{
-"22":"2203"
-}
+"22":"2214"
 }
 vagrant@vagrant-ubuntu-trusty-64:~
 ```
@@ -112,8 +134,8 @@ vagrant@vagrant-ubuntu-trusty-64:~
 vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ cat ansible_hosts 
 [head-end]
 rtr1 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2222
-rtr3 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2203
-rtr5 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2203
+rtr3 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2201
+rtr5 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2210
 
 
 [head-end:vars]
@@ -125,9 +147,9 @@ ubuntu_rtr3 ospf_process="apphost" reference_interface="GigabitEthernet0/0/0/0" 
 ubuntu_rtr5 ospf_process="apphost" reference_interface="GigabitEthernet0/0/0/0" iperf_server="6.6.6.6" jitter_threshold="4" pktloss_threshold="6" iperf_monitoring_interval="10" ansible_become_pass="ubuntu" ansible_ssh_user="ubuntu" ansible_ssh_pass="ubuntu" ansible_ssh_host=10.0.2.2 ansible_ssh_port=58844
 
 [tail-end]
-rtr2 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2201
-rtr4 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2207
-rtr6 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2207
+rtr2 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2202
+rtr4 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2208
+rtr6 ansible_ssh_user="vagrant" ansible_ssh_host=10.0.2.2 ansible_ssh_port=2212
 
 vagrant@vagrant-ubuntu-trusty-64:~/iosxr-ansible/remote$ 
 
