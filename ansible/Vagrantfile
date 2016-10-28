@@ -109,12 +109,10 @@ Vagrant.configure(2) do |config|
     devbox.vm.provision "file", source: "configs/ansible_env", destination:"/home/vagrant/ansible_env"
 
 
-    http_proxy = ENV['http_proxy']
-    https_proxy = ENV['https_proxy']
 
     devbox.vm.provision "setup_ansible", privileged: false, type: "shell" do |s|
         s.path = "scripts/ansible_setup.sh"
-        s.args = '#{http_proxy} #{https_proxy}'
+        s.args = '#{ENV['http_proxy']} #{ENV['https_proxy']}'
     end
 
     # Transfer script to apply public keys to XR that can be run later
