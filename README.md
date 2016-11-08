@@ -57,8 +57,9 @@ root@pod5:/home/ubuntu#
 
 ## Using Ansible
 
-To solve this problem using Ansible and automate your steps in the same way as you would on actual routers, check out the `ansible/` directory and the corresponind README.md
-The we use with Ansible is:  
+To solve this problem using Ansible and automate your steps in the same way as you would on actual routers, check out the `ansible/` directory and the corresponind README.md  
+
+The topology we use with Ansible is:  
 ![topo](https://xrdocs.github.io/xrdocs-images/assets/images/ansible_pathchecker.png)  
 
 The relevant README.md:
